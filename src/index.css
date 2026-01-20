@@ -1,0 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Cosmos Associates & Builders - Design System
+   Brand: White #FFFFFF, Navy #1B2A4A, Crimson #8B1A1A
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222 46% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 46% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 46% 20%;
+
+    /* Navy as primary */
+    --primary: 222 46% 20%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Crimson as secondary brand */
+    --secondary: 0 69% 32%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 220 20% 96%;
+    --muted-foreground: 222 20% 40%;
+
+    --accent: 0 69% 32%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 20% 90%;
+    --input: 220 20% 90%;
+    --ring: 222 46% 20%;
+
+    --radius: 0.5rem;
+
+    /* Custom brand tokens */
+    --navy: 222 46% 20%;          /* #1B2A4A */
+    --navy-light: 222 46% 30%;
+    --navy-soft: 222 40% 96%;
+    --crimson: 0 69% 32%;          /* #8B1A1A */
+    --crimson-light: 0 69% 42%;
+    --gold: 42 78% 55%;
+
+    /* Gradients */
+    --gradient-navy: linear-gradient(135deg, hsl(222 46% 18%), hsl(222 46% 28%));
+    --gradient-crimson: linear-gradient(135deg, hsl(0 69% 32%), hsl(0 69% 42%));
+    --gradient-soft: linear-gradient(180deg, hsl(0 0% 100%), hsl(220 30% 98%));
+
+    /* Shadows */
+    --shadow-card: 0 4px 20px -4px hsl(222 46% 20% / 0.08);
+    --shadow-lift: 0 20px 40px -12px hsl(222 46% 20% / 0.18);
+    --shadow-crimson: 0 10px 30px -10px hsl(0 69% 32% / 0.35);
+
+    /* Transitions */
+    --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Site is bright-only per spec; keep tokens consistent */
+    --background: 0 0% 100%;
+    --foreground: 222 46% 20%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+    @apply tracking-tight;
+  }
+}
+
+@layer utilities {
+  .font-serif {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+  .font-sans {
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+
+  /* Architectural background pattern */
+  .architectural-pattern {
+    background-image:
+      linear-gradient(hsl(var(--navy) / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--navy) / 0.04) 1px, transparent 1px),
+      radial-gradient(circle at 20% 30%, hsl(var(--crimson) / 0.04), transparent 40%),
+      radial-gradient(circle at 80% 70%, hsl(var(--navy) / 0.06), transparent 40%);
+    background-size: 60px 60px, 60px 60px, 100% 100%, 100% 100%;
+  }
+
+  .gradient-navy { background: var(--gradient-navy); }
+  .gradient-crimson { background: var(--gradient-crimson); }
+
+  .shadow-card { box-shadow: var(--shadow-card); }
+  .shadow-lift { box-shadow: var(--shadow-lift); }
+  .shadow-crimson { box-shadow: var(--shadow-crimson); }
+
+  .transition-smooth { transition: all 0.4s var(--transition-smooth); }
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1), transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Marquee */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* Hero stagger */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.9s cubic-bezier(0.4, 0, 0.2, 1) both; }
+
+/* Subtle float */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-float { animation: float 3s ease-in-out infinite; }
+
+/* Horizontal project scroll strip */
+.projects-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--accent) / 0.5) transparent;
+}
+.projects-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+.projects-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.projects-scroll::-webkit-scrollbar-thumb {
+  background: hsl(var(--accent) / 0.45);
+  border-radius: 9999px;
+}
+.projects-scroll::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--accent) / 0.75);
+}
