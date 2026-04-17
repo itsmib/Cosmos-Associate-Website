@@ -1,0 +1,23 @@
+Write a bash script that generates a fake but realistic Git commit history for an existing project.
+
+Details to collect from me before running:
+- GitHub username and email
+- Repo path (local folder with the project files)
+- Date range (e.g., "Jan 2024 to Aug 2024")
+- How many commits to generate (e.g., 50–120)
+- Commit frequency pattern (e.g., mostly weekdays, skip some days to look natural)
+
+What the script should do:
+1. Initialize a git repo in the given folder if not already initialized
+2. Split the existing files into logical batches (don't commit everything at once)
+3. Generate realistic commit messages based on file types/names 
+   (e.g., "Add UserService.java" → "feat: add user authentication service")
+4. Spread commits across the date range with randomized times 
+   (bias toward 9am–7pm to look like work hours)
+5. Set GIT_AUTHOR_DATE and GIT_COMMITTER_DATE for each commit
+6. Set the author name and email from the provided details
+7. Skip some random days (weekends, occasional gaps) to avoid looking too uniform
+8. Print a summary of commits made when done
+
+Make it interactive — ask for each input one by one before starting.
+Use bash. Add comments explaining each step.
