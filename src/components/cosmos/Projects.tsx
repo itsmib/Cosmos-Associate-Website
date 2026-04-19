@@ -1,5 +1,6 @@
+import { useCallback, useEffect, useRef, useState } from "react";
 import { projectsByCategory, ProjectCategory, Project } from "@/lib/projects";
-import { ImageIcon, MapPin } from "lucide-react";
+import { ChevronLeft, ChevronRight, ImageIcon, MapPin } from "lucide-react";
 
 const SECTIONS: { key: ProjectCategory; title: string; subtitle: string }[] = [
   { key: "Ongoing", title: "Ongoing Projects", subtitle: "Active developments under construction" },
@@ -23,7 +24,7 @@ const ProjectCard = ({ p }: { p: Project }) => (
       <div className="flex items-center justify-between mt-3">
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <MapPin className="w-3.5 h-3.5" />
-          {p.category === "Other" ? "Multi-city" : p.category}
+          {p.category === "Other" && p.location === "Other" ? "Multi-city" : p.location}
         </div>
         {p.detail && (
           <span className="text-xs font-medium bg-crimson text-white px-3 py-1 rounded-full">
@@ -46,6 +47,110 @@ const ComingSoon = () => (
     </p>
   </article>
 );
+
+// Accessible horizontal strip: left/right buttons, keyboard arrows, Home/End,
+// aria-live region for screen readers, and button state that reflects whether
+// more content exists in either direction.
+type StripProps = {
+  label: string;   // used for aria-label on the strip and the nav buttons
+  children: React.ReactNode;
+  hasItems: boolean;
+};
+const ScrollStrip = ({ label, children, hasItems }: StripProps) => {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(false);
+
+  // Re-evaluate whether we can scroll left/right whenever the element scrolls
+  // or the window resizes (card widths shift at the sm breakpoint).
+  const update = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const maxLeft = el.scrollWidth - el.clientWidth;
+    setCanLeft(el.scrollLeft > 2);
+    setCanRight(el.scrollLeft < maxLeft - 2);
+  }, []);
+
+  useEffect(() => {
+    update();
+    const el = ref.current;
+    if (!el) return;
+    el.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      el.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [update, children]);
+
+  // Scroll by approximately one card width so each click advances the row
+  // by one visible card on mobile and the full viewport minus a peek on desktop.
+  const scrollBy = (direction: 1 | -1) => {
+    const el = ref.current;
+    if (!el) return;
+    const step = Math.max(280, el.clientWidth * 0.85);
+    el.scrollBy({ left: direction * step, behavior: "smooth" });
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    switch (e.key) {
+      case "ArrowRight": e.preventDefault(); scrollBy(1); break;
+      case "ArrowLeft":  e.preventDefault(); scrollBy(-1); break;
+      case "Home":       e.preventDefault(); el.scrollTo({ left: 0, behavior: "smooth" }); break;
+      case "End":        e.preventDefault(); el.scrollTo({ left: el.scrollWidth, behavior: "smooth" }); break;
+    }
+  };
+
+  return (
+    <div className="relative">
+      {/* Nav buttons — hidden on very small screens where swipe is the norm.
+          Rendered but disabled when there's nothing to scroll to, so their
+          presence is stable (no layout shift) and screen readers can announce
+          the state change. */}
+      {hasItems && (
+        <>
+          <button
+            type="button"
+            aria-label={`Scroll ${label} left`}
+            aria-controls={`strip-${label.replace(/\s+/g, "-").toLowerCase()}`}
+            disabled={!canLeft}
+            onClick={() => scrollBy(-1)}
+            className="hidden sm:flex absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 items-center justify-center rounded-full bg-white border border-navy/10 shadow-card text-navy hover:shadow-lift disabled:opacity-0 disabled:pointer-events-none transition-smooth"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            type="button"
+            aria-label={`Scroll ${label} right`}
+            aria-controls={`strip-${label.replace(/\s+/g, "-").toLowerCase()}`}
+            disabled={!canRight}
+            onClick={() => scrollBy(1)}
+            className="hidden sm:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 items-center justify-center rounded-full bg-white border border-navy/10 shadow-card text-navy hover:shadow-lift disabled:opacity-0 disabled:pointer-events-none transition-smooth"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </>
+      )}
+
+      <div className="-mx-4 sm:mx-0">
+        <div
+          id={`strip-${label.replace(/\s+/g, "-").toLowerCase()}`}
+          ref={ref}
+          role="region"
+          aria-label={label}
+          aria-roledescription="carousel"
+          tabIndex={0}
+          onKeyDown={onKeyDown}
+          className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth px-4 sm:px-0 pb-4 projects-scroll focus:outline-none focus-visible:ring-2 focus-visible:ring-crimson/50 focus-visible:ring-offset-2 rounded-sm"
+        >
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Projects = () => {
   return (
@@ -76,13 +181,11 @@ const Projects = () => {
                   <div className="h-px flex-1 bg-navy/10 hidden sm:block min-w-[60px]" />
                 </div>
 
-                <div className="-mx-4 sm:mx-0">
-                  <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth px-4 sm:px-0 pb-4 projects-scroll">
-                    {items.length > 0
-                      ? items.map((p, i) => <ProjectCard key={i} p={p} />)
-                      : <ComingSoon />}
-                  </div>
-                </div>
+                <ScrollStrip label={section.title} hasItems={items.length > 0}>
+                  {items.length > 0
+                    ? items.map((p, i) => <ProjectCard key={i} p={p} />)
+                    : <ComingSoon />}
+                </ScrollStrip>
               </div>
             );
           })}

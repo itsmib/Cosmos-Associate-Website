@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Cosmos — Project Admin</title>
+  <style>
+    :root {
+      --navy: #1B2A4A;
+      --crimson: #8B1A1A;
+      --muted: #6B7280;
+      --bg: #F7F7F8;
+      --card: #FFFFFF;
+      --border: #E5E7EB;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--navy);
+      line-height: 1.5;
+    }
+    header {
+      background: var(--navy);
+      color: white;
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 { margin: 0; font-size: 1.125rem; letter-spacing: 0.05em; }
+    header .site-link { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.8rem; }
+    header .site-link:hover { color: white; }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .card h2 { margin: 0 0 1rem; font-size: 1rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+
+    label { display: block; font-size: 0.85rem; margin-bottom: 0.35rem; color: var(--muted); }
+    input[type="password"], input[type="file"] {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background: white;
+    }
+    button {
+      background: var(--navy);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    button:hover:not(:disabled) { opacity: 0.9; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button.danger { background: var(--crimson); }
+
+    .row { display: flex; gap: 0.75rem; align-items: flex-end; }
+    .row > div { flex: 1; }
+
+    .status {
+      margin-top: 0.75rem;
+      padding: 0.6rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      display: none;
+    }
+    .status.ok { background: #E6F4EA; color: #1E7E34; display: block; }
+    .status.err { background: #FCEAEA; color: #B71C1C; display: block; }
+    .status.info { background: #E8F0FE; color: #1A56DB; display: block; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .tile {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: white;
+      display: flex;
+      flex-direction: column;
+    }
+    .tile img { width: 100%; aspect-ratio: 4/3; object-fit: cover; background: #eee; }
+    .tile .body { padding: 0.75rem; flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+    .tile .name { font-weight: 600; font-size: 0.95rem; }
+    .tile .meta { font-size: 0.75rem; color: var(--muted); }
+    .tile .filename { font-family: ui-monospace, monospace; font-size: 0.7rem; color: #888; word-break: break-all; }
+    .tile .actions { display: flex; justify-content: flex-end; margin-top: auto; padding-top: 0.5rem; }
+    .tile button { padding: 0.4rem 0.75rem; font-size: 0.75rem; }
+
+    .help {
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: #F3F4F6;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin-top: 0.75rem;
+    }
+    .help code { background: white; padding: 0.1rem 0.3rem; border-radius: 4px; }
+
+    .empty { color: var(--muted); text-align: center; padding: 2rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cosmos · Project Admin</h1>
+    <a href="/" class="site-link">← back to site</a>
+  </header>
+
+  <main>
+    <!-- Login gate -->
+    <section id="login" class="card">
+      <h2>Sign in</h2>
+      <div class="row">
+        <div>
+          <label for="password">Admin password</label>
+          <input id="password" type="password" autocomplete="current-password" placeholder="••••••••" />
+        </div>
+        <button id="login-btn">Unlock</button>
+      </div>
+      <div id="login-status" class="status"></div>
+    </section>
+
+    <!-- Main admin UI (hidden until auth succeeds) -->
+    <div id="admin-ui" hidden>
+      <section class="card">
+        <h2>Add / update project</h2>
+        <label for="file">Image file</label>
+        <input id="file" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+        <div class="help">
+          Filename: <code>Name_Category(Location)_Detail.jpg</code><br>
+          Category = <code>Ongoing</code> | <code>Karaikal</code> | <code>Chennai</code> | <code>Other</code>.
+          Example: <code>Ruby_Ongoing(Karaikal)_42Plots.jpg</code>
+        </div>
+        <div style="margin-top: 1rem;">
+          <button id="upload-btn" disabled>Upload</button>
+        </div>
+        <div id="upload-status" class="status"></div>
+      </section>
+
+      <section class="card">
+        <h2>Existing projects <span id="count" style="color: var(--muted); font-weight: normal;"></span></h2>
+        <div id="list-status" class="status"></div>
+        <div id="grid" class="grid"></div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // Admin password is held in sessionStorage. It's a bearer-like token:
+    // the server does a constant-time compare against ADMIN_PASSWORD env var.
+    const PW_KEY = 'cosmos-admin-pw';
+
+    const $ = (id) => document.getElementById(id);
+    const loginEl    = $('login');
+    const adminEl    = $('admin-ui');
+    const pwInput    = $('password');
+    const loginBtn   = $('login-btn');
+    const loginMsg   = $('login-status');
+    const fileInput  = $('file');
+    const uploadBtn  = $('upload-btn');
+    const uploadMsg  = $('upload-status');
+    const listMsg    = $('list-status');
+    const gridEl     = $('grid');
+    const countEl    = $('count');
+
+    function setStatus(el, kind, text) {
+      el.className = 'status ' + kind;
+      el.textContent = text;
+    }
+    function clearStatus(el) {
+      el.className = 'status';
+      el.textContent = '';
+    }
+
+    async function api(path, opts = {}) {
+      const pw = sessionStorage.getItem(PW_KEY) || '';
+      const res = await fetch(path, {
+        ...opts,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': pw,
+          ...(opts.headers || {}),
+        },
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      return data;
+    }
+
+    async function tryLogin() {
+      const pw = pwInput.value.trim();
+      if (!pw) return;
+      sessionStorage.setItem(PW_KEY, pw);
+      setStatus(loginMsg, 'info', 'Checking…');
+      try {
+        await api('/api/admin/list');
+        loginEl.hidden = true;
+        adminEl.hidden = false;
+        clearStatus(loginMsg);
+        await refresh();
+      } catch (e) {
+        sessionStorage.removeItem(PW_KEY);
+        setStatus(loginMsg, 'err', e.message || 'Login failed');
+      }
+    }
+
+    loginBtn.addEventListener('click', tryLogin);
+    pwInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') tryLogin(); });
+
+    // Auto-login if we already have a working password in this tab session.
+    if (sessionStorage.getItem(PW_KEY)) {
+      pwInput.value = sessionStorage.getItem(PW_KEY);
+      tryLogin();
+    }
+
+    // --- Upload ---
+    fileInput.addEventListener('change', () => {
+      uploadBtn.disabled = !fileInput.files || fileInput.files.length === 0;
+      clearStatus(uploadMsg);
+    });
+
+    uploadBtn.addEventListener('click', async () => {
+      const file = fileInput.files[0];
+      if (!file) return;
+      uploadBtn.disabled = true;
+      setStatus(uploadMsg, 'info', `Uploading ${file.name}…`);
+      try {
+        const contentBase64 = await fileToBase64(file);
+        const r = await api('/api/admin/upload', {
+          method: 'POST',
+          body: JSON.stringify({ filename: file.name, contentBase64 }),
+        });
+        setStatus(uploadMsg, 'ok',
+          `${r.updated ? 'Updated' : 'Added'} ${file.name}. Site redeploys in ~60s.`);
+        fileInput.value = '';
+        await refresh();
+      } catch (e) {
+        setStatus(uploadMsg, 'err', e.message || 'Upload failed');
+      } finally {
+        uploadBtn.disabled = false;
+      }
+    });
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => {
+          const s = String(r.result);
+          // Strip "data:...;base64," prefix.
+          resolve(s.slice(s.indexOf(',') + 1));
+        };
+        r.onerror = () => reject(new Error('Could not read file'));
+        r.readAsDataURL(file);
+      });
+    }
+
+    // --- List + delete ---
+    async function refresh() {
+      setStatus(listMsg, 'info', 'Loading…');
+      try {
+        const { files } = await api('/api/admin/list');
+        clearStatus(listMsg);
+        renderList(files);
+      } catch (e) {
+        setStatus(listMsg, 'err', e.message || 'Failed to load');
+      }
+    }
+
+    function renderList(files) {
+      gridEl.innerHTML = '';
+      countEl.textContent = files.length ? `(${files.length})` : '';
+      if (!files.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.textContent = 'No projects yet.';
+        gridEl.appendChild(empty);
+        return;
+      }
+      for (const f of files) {
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+
+        const img = document.createElement('img');
+        img.src = f.url || '';
+        img.alt = f.filename;
+        img.loading = 'lazy';
+        tile.appendChild(img);
+
+        const body = document.createElement('div');
+        body.className = 'body';
+
+        const nameEl = document.createElement('div');
+        nameEl.className = 'name';
+        nameEl.textContent = f.parsed ? f.parsed.name : '(unparseable)';
+        body.appendChild(nameEl);
+
+        const metaEl = document.createElement('div');
+        metaEl.className = 'meta';
+        if (f.parsed) {
+          const bits = [f.parsed.categoryLabel + ' · ' + f.parsed.location];
+          if (f.parsed.detail) bits.push(f.parsed.detail);
+          metaEl.textContent = bits.join(' · ');
+        } else {
+          metaEl.textContent = 'Filename does not match convention';
+        }
+        body.appendChild(metaEl);
+
+        const fnEl = document.createElement('div');
+        fnEl.className = 'filename';
+        fnEl.textContent = f.filename;
+        body.appendChild(fnEl);
+
+        const actions = document.createElement('div');
+        actions.className = 'actions';
+        const del = document.createElement('button');
+        del.className = 'danger';
+        del.textContent = 'Delete';
+        del.addEventListener('click', () => onDelete(f.filename));
+        actions.appendChild(del);
+        body.appendChild(actions);
+
+        tile.appendChild(body);
+        gridEl.appendChild(tile);
+      }
+    }
+
+    async function onDelete(filename) {
+      if (!confirm(`Delete ${filename}? This cannot be undone.`)) return;
+      setStatus(listMsg, 'info', `Deleting ${filename}…`);
+      try {
+        await api('/api/admin/delete', {
+          method: 'POST',
+          body: JSON.stringify({ filename }),
+        });
+        setStatus(listMsg, 'ok', `Deleted ${filename}. Site redeploys in ~60s.`);
+        await refresh();
+      } catch (e) {
+        setStatus(listMsg, 'err', e.message || 'Delete failed');
+      }
+    }
+  </script>
+</body>
+</html>
