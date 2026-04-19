@@ -2,8 +2,8 @@
 // Body JSON: { filename: string, contentBase64: string }
 // Adds or updates src/projectadd/<filename> on GitHub.
 
-const axios = require('axios');
-const {
+import axios from 'axios';
+import {
   env,
   requireAuth,
   ghHeaders,
@@ -11,9 +11,9 @@ const {
   parseFilename,
   validExt,
   MAX_BYTES,
-} = require('./_lib');
+} from './_lib.js';
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
@@ -75,11 +75,11 @@ module.exports = async (req, res) => {
     console.error(e?.response?.data || e.message);
     return res.status(500).json({ error: 'Upload failed.' });
   }
-};
+}
 
 // Vercel's default body limit for JSON is ~4.5 MB; bump it so base64 payloads
 // up to 5 MB of raw binary (~6.7 MB of base64) fit.
-module.exports.config = {
+export const config = {
   api: {
     bodyParser: { sizeLimit: '8mb' },
   },

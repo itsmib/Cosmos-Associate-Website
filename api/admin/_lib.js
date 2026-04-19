@@ -5,7 +5,7 @@
 // don't leak length via timing. Not a replacement for real auth — this is
 // a single-user tool. Put it behind a strong random password.
 
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 const GITHUB_TOKEN   = process.env.GITHUB_TOKEN;
 const GITHUB_OWNER   = process.env.GITHUB_OWNER;
@@ -14,17 +14,17 @@ const GITHUB_BRANCH  = process.env.GITHUB_BRANCH || 'main';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 const GH_CONTENTS_PATH = 'src/projectadd';
-const VALID_EXTS       = ['jpg', 'jpeg', 'png', 'webp'];
-const VALID_TYPES      = ['ongoing', 'karaikal', 'chennai', 'other'];
-const MAX_BYTES        = 5 * 1024 * 1024;
+export const VALID_EXTS  = ['jpg', 'jpeg', 'png', 'webp'];
+const VALID_TYPES        = ['ongoing', 'karaikal', 'chennai', 'other'];
+export const MAX_BYTES   = 5 * 1024 * 1024;
 
-function env() {
+export function env() {
   return { GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO, GITHUB_BRANCH, GH_CONTENTS_PATH };
 }
 
 // Returns true iff the request provides a password matching ADMIN_PASSWORD.
 // Responds 401 + logs nothing if not — do NOT echo back what was submitted.
-function requireAuth(req, res) {
+export function requireAuth(req, res) {
   if (!ADMIN_PASSWORD) {
     res.status(500).json({ error: 'ADMIN_PASSWORD not configured on the server.' });
     return false;
@@ -40,7 +40,7 @@ function requireAuth(req, res) {
   return true;
 }
 
-function ghHeaders() {
+export function ghHeaders() {
   return {
     Authorization: `Bearer ${GITHUB_TOKEN}`,
     Accept: 'application/vnd.github+json',
@@ -48,18 +48,18 @@ function ghHeaders() {
   };
 }
 
-function ghContentsUrl(filename) {
+export function ghContentsUrl(filename) {
   const safe = encodeURIComponent(filename);
   return `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GH_CONTENTS_PATH}/${safe}`;
 }
 
-function ghDirUrl() {
+export function ghDirUrl() {
   return `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GH_CONTENTS_PATH}`;
 }
 
 // Filename parser — mirrors src/lib/projects.ts so the admin UI can show
 // what the user is about to commit (same breakdown the site will render).
-function parseFilename(filename) {
+export function parseFilename(filename) {
   const base = filename.replace(/\.[^/.]+$/, '');
   const parts = base.split('_');
   if (parts.length < 2) return null;
@@ -92,19 +92,7 @@ function titleCase(raw) {
     .join(' ');
 }
 
-function validExt(filename) {
+export function validExt(filename) {
   const ext = (filename.split('.').pop() || '').toLowerCase();
   return VALID_EXTS.includes(ext);
 }
-
-module.exports = {
-  env,
-  requireAuth,
-  ghHeaders,
-  ghContentsUrl,
-  ghDirUrl,
-  parseFilename,
-  validExt,
-  VALID_EXTS,
-  MAX_BYTES,
-};

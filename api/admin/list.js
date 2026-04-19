@@ -1,10 +1,10 @@
 // GET /api/admin/list
 // Returns all project images in src/projectadd with parsed metadata.
 
-const axios = require('axios');
-const { env, requireAuth, ghHeaders, ghDirUrl, parseFilename } = require('./_lib');
+import axios from 'axios';
+import { env, requireAuth, ghHeaders, ghDirUrl, parseFilename } from './_lib.js';
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ error: 'Method not allowed' });
@@ -42,4 +42,4 @@ module.exports = async (req, res) => {
     console.error(e?.response?.data || e.message);
     return res.status(500).json({ error: 'Failed to list projects.' });
   }
-};
+}

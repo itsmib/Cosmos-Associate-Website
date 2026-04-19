@@ -2,10 +2,10 @@
 // Body JSON: { filename: string }
 // Deletes src/projectadd/<filename> from GitHub.
 
-const axios = require('axios');
-const { env, requireAuth, ghHeaders, ghContentsUrl } = require('./_lib');
+import axios from 'axios';
+import { env, requireAuth, ghHeaders, ghContentsUrl } from './_lib.js';
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
@@ -52,4 +52,4 @@ module.exports = async (req, res) => {
     console.error(e?.response?.data || e.message);
     return res.status(500).json({ error: 'Delete failed.' });
   }
-};
+}
