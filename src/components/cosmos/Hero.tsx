@@ -1,7 +1,6 @@
 import logo from "@/assets/cosmos-logo.png";
 import { ArrowRight, MessageCircle } from "lucide-react";
-
-const WHATSAPP = "https://wa.me/919944348827?text=" + encodeURIComponent("Hello, I am interested in your properties. Please share more details.");
+import { WHATSAPP } from "@/lib/contact";
 
 const Hero = () => {
   const scrollTo = (id: string) => {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import logo from "@/assets/cosmos-logo.png";
 import { Menu, X } from "lucide-react";
 
@@ -21,10 +22,21 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const scrollTo = (id: string) => {
     setOpen(false);
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (location.pathname !== "/") {
+      // On a sub-route (e.g. /project/:slug). Navigate home first, then scroll
+      // once the section has mounted.
+      navigate("/");
+      setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 60);
+      return;
+    }
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (

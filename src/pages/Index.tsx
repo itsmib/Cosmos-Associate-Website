@@ -12,9 +12,21 @@ import Contact from "@/components/cosmos/Contact";
 import Footer from "@/components/cosmos/Footer";
 import FloatingActions from "@/components/cosmos/FloatingActions";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const Index = () => {
   useScrollReveal();
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (!hash) return;
+    const id = hash.replace("#", "");
+    // Wait a tick so the section is mounted before we scroll.
+    const t = setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 60);
+    return () => clearTimeout(t);
+  }, [hash]);
   return (
     <main className="bg-background text-foreground">
       <Navbar />

@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowUp, MessageCircle } from "lucide-react";
-
-const WHATSAPP =
-  "https://wa.me/919944348827?text=" +
-  encodeURIComponent("Hello, I am interested in your properties. Please share more details.");
+import { WHATSAPP } from "@/lib/contact";
 
 const FloatingActions = () => {
   const [showTop, setShowTop] = useState(false);

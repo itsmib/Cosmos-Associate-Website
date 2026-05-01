@@ -1,11 +1,5 @@
 import { Phone, MessageCircle, MapPin, ExternalLink } from "lucide-react";
-
-const PHONE = "+919944348827";
-const PHONE_DISPLAY = "+91 99443 48827";
-const WHATSAPP =
-  "https://wa.me/919944348827?text=" +
-  encodeURIComponent("Hello, I am interested in your properties. Please share more details.");
-const MAPS_URL = "https://maps.app.goo.gl/FsfYS14fNTbWTHDp7";
+import { PHONE, PHONE_DISPLAY, WHATSAPP, OFFICE_MAPS_URL as MAPS_URL } from "@/lib/contact";
 
 const Contact = () => {
   return (
