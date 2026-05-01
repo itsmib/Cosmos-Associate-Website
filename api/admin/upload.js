@@ -34,7 +34,7 @@ export default async function handler(req, res) {
   }
   if (!parseFilename(filename)) {
     return res.status(400).json({
-      error: 'Invalid filename. Use Name_Category(Location)_Detail.jpg — category must be Ongoing, Karaikal, Chennai, or Other.',
+      error: 'Invalid filename. Use Name_Category(Location)_Detail.jpg — category must be Ongoing, Karaikal, Chennai, Renovation, or Other. For Renovation, add _Before or _After before the badge: Name_Renovation_Before.jpg.',
     });
   }
 

@@ -9,7 +9,7 @@
 //                      (e.g. Zume_Karaikal.jpg -> location "Karaikal").
 //   OptionalDetail  -> shown as crimson badge (e.g. "42 Plots")
 
-export type ProjectCategory = "Ongoing" | "Karaikal" | "Chennai" | "Other";
+export type ProjectCategory = "Ongoing" | "Karaikal" | "Chennai" | "Renovation" | "Other";
 
 export interface Project {
   name: string;
@@ -17,13 +17,30 @@ export interface Project {
   location: string;
   detail?: string;
   image: string;
+  /** Only set for Renovation projects — distinguishes the two paired images. */
+  variant?: "Before" | "After";
+}
+
+/** A renovation card pairs a Before and an After image of the same property. */
+export interface RenovationProject {
+  name: string;
+  location: string;
+  detail?: string;
+  before?: string;
+  after?: string;
 }
 
 const TYPE_MAP: Record<string, ProjectCategory> = {
   ongoing: "Ongoing",
   karaikal: "Karaikal",
   chennai: "Chennai",
+  renovation: "Renovation",
   other: "Other",
+};
+
+const RENO_VARIANTS: Record<string, "Before" | "After"> = {
+  before: "Before",
+  after: "After",
 };
 
 function titleCase(raw: string) {
@@ -66,7 +83,19 @@ function parseFile(path: string, url: string): Project | null {
   const cat = TYPE_MAP[typeToken.toLowerCase()];
   if (!cat) return null;
 
-  const detail = rest.length ? titleCase(rest.join("_")) : undefined;
+  // For Renovation, the FIRST trailing token (if it's "Before" or "After")
+  // is the variant marker, not part of the badge detail.
+  let variant: "Before" | "After" | undefined;
+  let detailParts = rest;
+  if (cat === "Renovation" && rest.length > 0) {
+    const v = RENO_VARIANTS[rest[0].toLowerCase()];
+    if (v) {
+      variant = v;
+      detailParts = rest.slice(1);
+    }
+  }
+
+  const detail = detailParts.length ? titleCase(detailParts.join("_")) : undefined;
 
   // Location shown on the card: the override if provided, otherwise the
   // category name (so old-style filenames like "Zume_Karaikal.jpg" keep
@@ -79,6 +108,7 @@ function parseFile(path: string, url: string): Project | null {
     location,
     detail,
     image: url,
+    ...(variant ? { variant } : {}),
   };
 }
 
@@ -88,3 +118,25 @@ export const projects: Project[] = Object.entries(modules)
 
 export const projectsByCategory = (cat: ProjectCategory) =>
   projects.filter((p) => p.category === cat);
+
+// Group Renovation projects so each property's Before + After images live on
+// the same card. Pairing key is "name|location" so two properties of the same
+// name in different locations stay distinct.
+export const renovationProjects: RenovationProject[] = (() => {
+  const map = new Map<string, RenovationProject>();
+  for (const p of projects) {
+    if (p.category !== "Renovation") continue;
+    const key = `${p.name}|${p.location}`;
+    let entry = map.get(key);
+    if (!entry) {
+      entry = { name: p.name, location: p.location, detail: p.detail };
+      map.set(key, entry);
+    }
+    // Prefer the first non-empty detail seen.
+    if (!entry.detail && p.detail) entry.detail = p.detail;
+    if (p.variant === "Before") entry.before = p.image;
+    else if (p.variant === "After") entry.after = p.image;
+    else if (!entry.before && !entry.after) entry.after = p.image; // unmarked → treat as single
+  }
+  return Array.from(map.values());
+})();

@@ -1,11 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { projectsByCategory, ProjectCategory, Project } from "@/lib/projects";
+import {
+  projectsByCategory,
+  renovationProjects,
+  ProjectCategory,
+  Project,
+  RenovationProject,
+} from "@/lib/projects";
 import { ChevronLeft, ChevronRight, ImageIcon, MapPin } from "lucide-react";
 
-const SECTIONS: { key: ProjectCategory; title: string; subtitle: string }[] = [
+type SectionKey = ProjectCategory;
+
+const SECTIONS: { key: SectionKey; title: string; subtitle: string }[] = [
   { key: "Ongoing", title: "Ongoing Projects", subtitle: "Active developments under construction" },
   { key: "Karaikal", title: "Projects in Karaikal", subtitle: "Our home ground for four decades" },
   { key: "Chennai", title: "Projects in Chennai", subtitle: "Bringing Cosmos quality to the metropolitan" },
+  { key: "Renovation", title: "Renovation Projects", subtitle: "Restored, reimagined — see the transformation" },
   { key: "Other", title: "Projects in Other Cities", subtitle: "Expanding trust beyond borders" },
 ];
 
@@ -35,6 +44,66 @@ const ProjectCard = ({ p }: { p: Project }) => (
     </div>
   </article>
 );
+
+// Renovation card: Before | After side-by-side, falling back to a single
+// full-width image if only one variant has been uploaded so far.
+const RenovationCard = ({ p }: { p: RenovationProject }) => {
+  const hasBoth = !!p.before && !!p.after;
+  const single = p.before || p.after;
+  return (
+    <article className="group bg-white rounded-2xl border border-navy/10 overflow-hidden shadow-card hover:shadow-lift hover:-translate-y-1 transition-smooth shrink-0 w-[320px] sm:w-[460px] snap-start">
+      <div className="aspect-[16/9] overflow-hidden bg-muted">
+        {hasBoth ? (
+          <div className="grid grid-cols-2 h-full">
+            <div className="relative overflow-hidden border-r border-white/40">
+              <img
+                src={p.before}
+                alt={`${p.name} — before renovation`}
+                loading="lazy"
+                className="w-full h-full object-cover group-hover:scale-105 transition-smooth duration-700"
+              />
+              <span className="absolute top-2 left-2 text-[10px] font-semibold tracking-wider uppercase bg-navy/85 text-white px-2 py-0.5 rounded-full">
+                Before
+              </span>
+            </div>
+            <div className="relative overflow-hidden">
+              <img
+                src={p.after}
+                alt={`${p.name} — after renovation`}
+                loading="lazy"
+                className="w-full h-full object-cover group-hover:scale-105 transition-smooth duration-700"
+              />
+              <span className="absolute top-2 left-2 text-[10px] font-semibold tracking-wider uppercase bg-crimson text-white px-2 py-0.5 rounded-full">
+                After
+              </span>
+            </div>
+          </div>
+        ) : (
+          <img
+            src={single}
+            alt={p.name}
+            loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-105 transition-smooth duration-700"
+          />
+        )}
+      </div>
+      <div className="p-5">
+        <h3 className="font-serif text-xl text-navy font-semibold mb-1">{p.name}</h3>
+        <div className="flex items-center justify-between mt-3">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <MapPin className="w-3.5 h-3.5" />
+            {p.location === "Renovation" ? "Renovation" : p.location}
+          </div>
+          {p.detail && (
+            <span className="text-xs font-medium bg-crimson text-white px-3 py-1 rounded-full">
+              {p.detail}
+            </span>
+          )}
+        </div>
+      </div>
+    </article>
+  );
+};
 
 const ComingSoon = () => (
   <article className="rounded-2xl border-2 border-dashed border-navy/15 bg-muted/40 p-10 flex flex-col items-center justify-center text-center min-h-[320px] shrink-0 w-[280px] sm:w-[320px] snap-start">
@@ -168,7 +237,10 @@ const Projects = () => {
 
         <div className="space-y-20">
           {SECTIONS.map((section) => {
-            const items = projectsByCategory(section.key);
+            const isReno = section.key === "Renovation";
+            const renoItems = isReno ? renovationProjects : [];
+            const items = isReno ? [] : projectsByCategory(section.key);
+            const hasItems = isReno ? renoItems.length > 0 : items.length > 0;
             return (
               <div key={section.key} className="reveal">
                 <div className="flex items-end justify-between mb-8 gap-4 flex-wrap">
@@ -181,9 +253,11 @@ const Projects = () => {
                   <div className="h-px flex-1 bg-navy/10 hidden sm:block min-w-[60px]" />
                 </div>
 
-                <ScrollStrip label={section.title} hasItems={items.length > 0}>
-                  {items.length > 0
-                    ? items.map((p, i) => <ProjectCard key={i} p={p} />)
+                <ScrollStrip label={section.title} hasItems={hasItems}>
+                  {hasItems
+                    ? (isReno
+                        ? renoItems.map((p, i) => <RenovationCard key={i} p={p} />)
+                        : items.map((p, i) => <ProjectCard key={i} p={p} />))
                     : <ComingSoon />}
                 </ScrollStrip>
               </div>

@@ -15,7 +15,8 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 const GH_CONTENTS_PATH = 'src/projectadd';
 export const VALID_EXTS  = ['jpg', 'jpeg', 'png', 'webp'];
-const VALID_TYPES        = ['ongoing', 'karaikal', 'chennai', 'other'];
+const VALID_TYPES        = ['ongoing', 'karaikal', 'chennai', 'renovation', 'other'];
+const RENO_VARIANTS      = ['before', 'after'];
 export const MAX_BYTES   = 5 * 1024 * 1024;
 
 export function env() {
@@ -77,9 +78,18 @@ export function parseFilename(filename) {
 
   const categoryLabel = typeToken.charAt(0).toUpperCase() + typeLc.slice(1);
   const location = titleCase(locationOverride || categoryLabel);
-  const detail = rest.length ? titleCase(rest.join('_')) : undefined;
+
+  // Renovation files may carry a Before/After variant as the first trailing
+  // token, e.g. "SiddiqueHouse_Renovation_Before.jpg".
+  let variant;
+  let detailParts = rest;
+  if (typeLc === 'renovation' && rest.length > 0 && RENO_VARIANTS.includes(rest[0].toLowerCase())) {
+    variant = rest[0].charAt(0).toUpperCase() + rest[0].slice(1).toLowerCase();
+    detailParts = rest.slice(1);
+  }
+  const detail = detailParts.length ? titleCase(detailParts.join('_')) : undefined;
   const name = titleCase(namePart);
-  return { name, categoryLabel, location, detail };
+  return { name, categoryLabel, location, detail, ...(variant ? { variant } : {}) };
 }
 
 function titleCase(raw) {
