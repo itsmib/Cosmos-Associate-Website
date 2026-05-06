@@ -1,6 +1,6 @@
 const items = [
   "40 Years of Trust",
-  "200+ Plots Sold",
+  "1500+ Plots Sold",
   "Karaikal's Most Trusted Builder",
   "BNI India Member",
   "Now Accepting Enquiries",

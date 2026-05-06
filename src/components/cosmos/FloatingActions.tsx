@@ -18,7 +18,7 @@ const FloatingActions = () => {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#1ebe57] text-white flex items-center justify-center shadow-lift hover:-translate-y-1 transition-smooth animate-float"
+        className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-50 w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#1ebe57] text-white flex items-center justify-center shadow-lift hover:-translate-y-1 transition-smooth animate-float"
       >
         <MessageCircle className="w-7 h-7" />
         <span className="absolute inset-0 rounded-full animate-ping bg-[#25D366]/40 -z-10" />
@@ -28,7 +28,7 @@ const FloatingActions = () => {
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Back to top"
-          className="fixed bottom-24 right-6 z-40 w-11 h-11 rounded-full bg-navy hover:bg-navy-light text-white flex items-center justify-center shadow-lift transition-smooth"
+          className="fixed bottom-[9.25rem] md:bottom-24 right-4 md:right-6 z-50 w-11 h-11 rounded-full bg-navy hover:bg-navy-light text-white flex items-center justify-center shadow-lift transition-smooth"
         >
           <ArrowUp className="w-5 h-5" />
         </button>

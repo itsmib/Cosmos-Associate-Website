@@ -40,7 +40,7 @@ const Hero = () => {
             className="fade-up text-lg sm:text-xl text-muted-foreground max-w-xl mb-10 leading-relaxed"
             style={{ animationDelay: "0.45s" }}
           >
-            Premium Real Estate across Karaikal & Chennai. Four decades of integrity, DTCP-approved plots and properties that families proudly call home.
+            Premium Real Estate across Karaikal and beyond. Four decades of integrity, DTCP / KPA / PPA-approved plots and properties that families proudly call home.
           </p>
 
           <div

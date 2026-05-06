@@ -6,10 +6,10 @@ import { ChevronLeft, ChevronRight, ImageIcon, MapPin } from "lucide-react";
 type SectionKey = ProjectCategory;
 
 const SECTIONS: { key: SectionKey; title: string; subtitle: string }[] = [
-  { key: "Ongoing", title: "Ongoing Projects", subtitle: "Active developments under construction" },
   { key: "Karaikal", title: "Projects in Karaikal", subtitle: "Our home ground for four decades" },
-  { key: "Chennai", title: "Projects in Chennai", subtitle: "Bringing Cosmos quality to the metropolitan" },
+  { key: "Ongoing", title: "Ongoing Projects", subtitle: "Active developments under construction" },
   { key: "Renovation", title: "Renovation Projects", subtitle: "Restored, reimagined — see the transformation" },
+  { key: "PlotLayout", title: "Plots Available for Sale", subtitle: "DTCP / KPA / PPA-approved layouts — own your piece of land today" },
   { key: "Other", title: "Projects in Other Cities", subtitle: "Expanding trust beyond borders" },
 ];
 
@@ -250,7 +250,7 @@ const Projects = () => {
             Properties Built on <em className="text-crimson font-medium">Promise</em>
           </h2>
           <p className="text-muted-foreground text-lg">
-            From DTCP-approved plots to premium developments — every Cosmos project is verified, transparent and built to last.
+            From DTCP / KPA / PPA-approved plots to premium developments — every Cosmos project is verified, transparent and built to last.
           </p>
         </div>
 

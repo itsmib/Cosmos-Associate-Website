@@ -4,7 +4,7 @@ const features = [
   {
     icon: FileCheck,
     title: "Verify Legal Status of Documents",
-    desc: "Every property goes through rigorous legal scrutiny — title deeds, encumbrance certificates and DTCP approvals — all verified before you sign.",
+    desc: "Every property goes through rigorous legal scrutiny — title deeds, encumbrance certificates and DTCP / KPA / PPA approvals — all verified before you sign.",
   },
   {
     icon: Landmark,

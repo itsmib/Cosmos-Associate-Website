@@ -15,7 +15,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 const GH_CONTENTS_PATH = 'src/projectadd';
 export const VALID_EXTS  = ['jpg', 'jpeg', 'png', 'webp'];
-const VALID_TYPES        = ['ongoing', 'karaikal', 'chennai', 'renovation', 'other'];
+const VALID_TYPES        = ['ongoing', 'karaikal', 'renovation', 'plotlayout', 'other'];
 const RENO_VARIANTS      = ['before', 'after'];
 export const MAX_BYTES   = 5 * 1024 * 1024;
 

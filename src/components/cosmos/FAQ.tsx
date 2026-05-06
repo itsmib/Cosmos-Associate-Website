@@ -8,15 +8,15 @@ import {
 const faqs = [
   {
     q: "How do I verify property documents?",
-    a: "Every Cosmos property comes with a complete verified documentation pack — title deed, parent documents, encumbrance certificate, DTCP approval and tax receipts. Our team walks you through each document and you are welcome to engage your own legal advisor at any stage.",
+    a: "Every Cosmos property comes with a complete verified documentation pack — title deed, parent documents, encumbrance certificate, DTCP / KPA / PPA approvals and tax receipts. Our team walks you through each document and you are welcome to engage your own legal advisor at any stage.",
   },
   {
     q: "What areas do you operate in?",
-    a: "We are headquartered in Karaikal with active projects across Karaikal, Chennai and select tier-2 cities. Our team can advise on suitable plots and developments based on your investment or residential goals.",
+    a: "We are headquartered in Karaikal with active projects across Karaikal and select tier-2 cities. Our team can advise on suitable plots and developments based on your investment or residential goals.",
   },
   {
-    q: "Are your plots DTCP approved?",
-    a: "Yes. All Cosmos plotted developments are DTCP/CMDA approved with clean titles. Approval certificates and layout plans are shared up-front before any commitment.",
+    q: "Are your plots DTCP / KPA / PPA approved?",
+    a: "Yes. All Cosmos plotted developments are DTCP / KPA / PPA approved with clean titles. Approval certificates and layout plans are shared up-front before any commitment.",
   },
   {
     q: "How do I book a site visit?",
@@ -30,7 +30,7 @@ const faqs = [
 
 const FAQ = () => {
   return (
-    <section className="py-24 sm:py-32 bg-background">
+    <section id="faq" className="py-24 sm:py-32 bg-background">
       <div className="container max-w-3xl">
         <div className="reveal text-center mb-16">
           <div className="text-crimson text-xs tracking-[0.3em] uppercase mb-4 font-medium">FAQ</div>

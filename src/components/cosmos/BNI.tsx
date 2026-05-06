@@ -2,7 +2,7 @@ import { Network } from "lucide-react";
 
 const BNI = () => {
   return (
-    <section className="py-16 bg-background">
+    <section id="bni" className="py-16 bg-background">
       <div className="container">
         <div className="reveal max-w-4xl mx-auto bg-white border border-navy/10 rounded-2xl p-8 sm:p-10 shadow-card flex flex-col sm:flex-row items-center gap-8 hover:shadow-lift transition-smooth">
           <div className="shrink-0 w-24 h-24 rounded-2xl bg-crimson/10 flex items-center justify-center text-crimson">

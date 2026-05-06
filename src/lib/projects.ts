@@ -31,8 +31,8 @@ function parseFrontmatter(raw: string): { data: Record<string, unknown>; content
 export type ProjectCategory =
   | "Ongoing"
   | "Karaikal"
-  | "Chennai"
   | "Renovation"
+  | "PlotLayout"
   | "Other";
 
 export interface Project {
@@ -60,8 +60,14 @@ export interface Project {
 const CATEGORY_MAP: Record<string, ProjectCategory> = {
   ongoing: "Ongoing",
   karaikal: "Karaikal",
-  chennai: "Chennai",
   renovation: "Renovation",
+  plotlayout: "PlotLayout",
+  "plot-layout": "PlotLayout",
+  "plot_layout": "PlotLayout",
+  plot: "PlotLayout",
+  plots: "PlotLayout",
+  available: "PlotLayout",
+  "available-plots": "PlotLayout",
   other: "Other",
 };
 

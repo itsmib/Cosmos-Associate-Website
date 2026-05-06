@@ -5,6 +5,12 @@
 export const PHONE = "+919944348827";
 export const PHONE_DISPLAY = "+91 99443 48827";
 export const OFFICE_MAPS_URL = "https://maps.app.goo.gl/FsfYS14fNTbWTHDp7";
+// Google Business Profile listing — the reviews tab is reachable from here.
+// Defaults to the same shortlink as OFFICE_MAPS_URL so all "see all reviews"
+// CTAs land on the verified Cosmos GBP page. Replace with a deep-link to the
+// reviews surface (e.g. https://search.google.com/local/reviews?placeid=...)
+// once the GBP placeId is on hand.
+export const GOOGLE_REVIEWS_URL = OFFICE_MAPS_URL;
 
 const WHATSAPP_BASE = "https://wa.me/919944348827?text=";
 const DEFAULT_MESSAGE =

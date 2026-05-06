@@ -23,7 +23,7 @@ Name_Category[(Location)][_Detail].ext
 ```
 
 - **Name**: property name (use `_` or `-` for spaces)
-- **Category**: `Ongoing`, `Karaikal`, `Chennai`, or `Other` — determines which section the card appears in
+- **Category**: `Ongoing`, `Karaikal`, `Renovation`, `PlotLayout`, or `Other` — determines which section the card appears in
 - **Location** (optional, in parentheses): what's shown on the card next to the map pin. Useful for `Ongoing` cards so viewers see the city instead of the word "Ongoing". Defaults to the category name if omitted.
 - **Detail** (optional): shown as a crimson badge (e.g. `42Plots`)
 

@@ -95,13 +95,13 @@ const Hero = ({ p }: { p: Project }) => {
         <div className="reveal rounded-2xl sm:rounded-3xl overflow-hidden border border-navy/10 shadow-card bg-muted">
           {renovation ? (
             <div className="grid grid-cols-1 sm:grid-cols-2">
-              <div className="relative aspect-[4/3] sm:aspect-[3/2] overflow-hidden">
+              <div className="relative aspect-[4/3] sm:aspect-[3/2] lg:aspect-[16/10] lg:max-h-[55vh] overflow-hidden">
                 <img src={p.before} alt={`${p.name} before`} className="w-full h-full object-cover" />
                 <span className="absolute top-3 left-3 sm:top-4 sm:left-4 text-[10px] sm:text-[11px] font-semibold tracking-wider uppercase bg-navy/85 text-white px-2.5 sm:px-3 py-1 rounded-full">
                   Before
                 </span>
               </div>
-              <div className="relative aspect-[4/3] sm:aspect-[3/2] overflow-hidden">
+              <div className="relative aspect-[4/3] sm:aspect-[3/2] lg:aspect-[16/10] lg:max-h-[55vh] overflow-hidden">
                 <img src={p.after} alt={`${p.name} after`} className="w-full h-full object-cover" />
                 <span className="absolute top-3 left-3 sm:top-4 sm:left-4 text-[10px] sm:text-[11px] font-semibold tracking-wider uppercase bg-crimson text-white px-2.5 sm:px-3 py-1 rounded-full">
                   After
@@ -109,11 +109,11 @@ const Hero = ({ p }: { p: Project }) => {
               </div>
             </div>
           ) : p.cover ? (
-            <div className="relative aspect-[4/3] sm:aspect-[16/9]">
+            <div className="relative aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9] lg:max-h-[55vh]">
               <img src={p.cover} alt={p.name} className="w-full h-full object-cover" />
             </div>
           ) : (
-            <div className="aspect-[4/3] sm:aspect-[16/9] flex items-center justify-center text-navy/30">
+            <div className="aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9] lg:max-h-[55vh] flex items-center justify-center text-navy/30">
               <ImageIcon className="w-12 h-12 sm:w-16 sm:h-16" />
             </div>
           )}
