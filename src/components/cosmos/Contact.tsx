@@ -45,7 +45,7 @@ const Contact = () => {
                 <MapPin className="w-4 h-4" /> Visit Our Office
               </div>
               <p className="text-navy text-lg leading-relaxed">
-                Royal Palace, 01, Thomas Arul St,
+                No. 1, Royal Park, Thomas Arul St,
                 <br />
                 Karaikal, Puducherry 609602
               </p>
@@ -63,7 +63,7 @@ const Contact = () => {
             >
               <iframe
                 title="Cosmos Associates & Builders office location"
-                src="https://www.google.com/maps?q=Royal+Palace,+01,+Thomas+Arul+St,+Karaikal,+Puducherry+609602&output=embed"
+                src="https://www.google.com/maps?q=No.+1+Royal+Park,+Thomas+Arul+St,+Karaikal,+Puducherry+609602&output=embed"
                 className="w-full h-[480px] border-0 pointer-events-none"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

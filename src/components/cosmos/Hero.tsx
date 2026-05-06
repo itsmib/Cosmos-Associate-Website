@@ -1,6 +1,12 @@
 import logo from "@/assets/cosmos-logo.png";
-import { ArrowRight, MessageCircle } from "lucide-react";
-import { WHATSAPP } from "@/lib/contact";
+import { ArrowRight, Facebook, Instagram, MessageCircle, Youtube } from "lucide-react";
+import { SOCIALS, WHATSAPP } from "@/lib/contact";
+
+const SOCIAL_LINKS = [
+  { href: SOCIALS.instagram, label: "Instagram", Icon: Instagram },
+  { href: SOCIALS.youtube,   label: "YouTube",   Icon: Youtube   },
+  { href: SOCIALS.facebook,  label: "Facebook",  Icon: Facebook  },
+];
 
 const Hero = () => {
   const scrollTo = (id: string) => {
@@ -40,7 +46,7 @@ const Hero = () => {
             className="fade-up text-lg sm:text-xl text-muted-foreground max-w-xl mb-10 leading-relaxed"
             style={{ animationDelay: "0.45s" }}
           >
-            Premium Real Estate across Karaikal and beyond. Four decades of integrity, DTCP / KPA / PPA-approved plots and properties that families proudly call home.
+            Premium Real Estate across Karaikal and Chennai. Four decades of integrity, DTCP / KPA / PPA-approved plots and properties that families proudly call home.
           </p>
 
           <div
@@ -63,6 +69,30 @@ const Hero = () => {
               <MessageCircle className="w-4 h-4" />
               WhatsApp Us
             </a>
+          </div>
+
+          <div
+            className="fade-up flex items-center gap-4 mt-8 sm:mt-10"
+            style={{ animationDelay: "0.8s" }}
+          >
+            <span className="text-[11px] tracking-[0.25em] uppercase text-navy/50 font-medium">
+              Follow us
+            </span>
+            <span className="h-px w-8 bg-navy/15" />
+            <div className="flex items-center gap-2.5">
+              {SOCIAL_LINKS.map(({ href, label, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="group w-10 h-10 rounded-full bg-white border border-navy/10 shadow-card flex items-center justify-center text-navy hover:bg-crimson hover:border-crimson hover:text-white hover:-translate-y-0.5 hover:shadow-crimson transition-smooth"
+                >
+                  <Icon className="w-4 h-4" />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 

@@ -23,3 +23,9 @@ export function whatsappFor(propertyName: string) {
   const msg = `Hello, I'm interested in the ${propertyName} property. Please share more details.`;
   return WHATSAPP_BASE + encodeURIComponent(msg);
 }
+
+export const SOCIALS = {
+  instagram: "https://www.instagram.com/cosmoskaraikal?igsh=bDZ6YXZkeHo5eGt2",
+  youtube:   "https://youtube.com/@cosmoskaraikal?si=95loApOm9gbxzqcq",
+  facebook:  "https://www.facebook.com/share/16epzwEogX/",
+};

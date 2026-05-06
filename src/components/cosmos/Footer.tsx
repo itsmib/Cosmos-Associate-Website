@@ -1,5 +1,12 @@
 import logo from "@/assets/cosmos-logo.png";
-import { MapPin, Phone } from "lucide-react";
+import { Facebook, Instagram, MapPin, Phone, Youtube } from "lucide-react";
+import { SOCIALS } from "@/lib/contact";
+
+const FOOTER_SOCIALS = [
+  { href: SOCIALS.instagram, label: "Instagram", Icon: Instagram },
+  { href: SOCIALS.youtube,   label: "YouTube",   Icon: Youtube   },
+  { href: SOCIALS.facebook,  label: "Facebook",  Icon: Facebook  },
+];
 
 const Footer = () => {
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -16,6 +23,20 @@ const Footer = () => {
             <p className="text-white/70 text-sm leading-relaxed">
               Karaikal's most trusted real estate name since 1985. Built on integrity, transparency and four decades of family commitment.
             </p>
+            <div className="flex items-center gap-2.5 mt-5">
+              {FOOTER_SOCIALS.map(({ href, label, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="w-9 h-9 rounded-full bg-white/10 hover:bg-crimson border border-white/15 hover:border-crimson flex items-center justify-center text-white/85 hover:text-white transition-smooth"
+                >
+                  <Icon className="w-4 h-4" />
+                </a>
+              ))}
+            </div>
           </div>
 
           <div>
@@ -36,7 +57,7 @@ const Footer = () => {
             <div className="space-y-3 text-sm text-white/80">
               <div className="flex gap-3">
                 <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-crimson-light" />
-                <span>Royal Palace, 01, Thomas Arul St, Karaikal, Puducherry 609602</span>
+                <span>No. 1, Royal Park, Thomas Arul St, Karaikal, Puducherry 609602</span>
               </div>
               <a href="tel:+919944348827" className="flex gap-3 hover:text-white transition-smooth">
                 <Phone className="w-4 h-4 mt-0.5 shrink-0 text-crimson-light" />

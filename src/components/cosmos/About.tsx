@@ -45,7 +45,7 @@ const About = () => {
                 />
               </div>
               <p className="mb-4">
-                In 1985, our visionary chairman established <strong className="text-navy">Cosmos</strong>, setting the stage for four decades of trusted real estate in Karaikal and beyond. What began as a modest practice rooted in integrity has grown into a name families across the region rely on when they think of home.
+                In 1985, our visionary chairman established <strong className="text-navy">Cosmos</strong>, setting the stage for four decades of trusted real estate in Karaikal and Chennai. What began as a modest practice rooted in integrity has grown into a name families across the region rely on when they think of home.
               </p>
               <p className="mb-4">
                 His approach was simple and uncompromising — deliver every plot and every structure with the same care he would expect for his own family. That standard still defines how Cosmos works today.
@@ -77,7 +77,7 @@ const About = () => {
             <h3 className="font-serif text-3xl sm:text-4xl text-navy font-semibold mb-2">
               Mohamed Sharik
             </h3>
-            <div className="text-sm text-muted-foreground italic mb-6">MD · BNI India Member</div>
+            <div className="text-sm text-muted-foreground italic mb-6">Cosmos MD & BNI India Member</div>
 
             <div className="text-foreground/80 leading-relaxed">
               <div className="relative shrink-0 float-none sm:float-left sm:mr-6 sm:mb-4 mb-6 w-max">
