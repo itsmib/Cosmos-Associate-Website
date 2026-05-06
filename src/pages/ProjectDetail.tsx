@@ -76,15 +76,44 @@ const SpecTable = ({ p }: { p: Project }) => {
 // Hero — Renovation gets a Before/After split, everything else gets a single
 // full-bleed cover image. Falls back to a tinted placeholder when no images.
 // ---------------------------------------------------------------------------
+// Full-bleed hero. Renovation gets a Before/After split; everything else gets
+// a single image with the title/badge/location overlaid on a gradient scrim
+// so the photo can actually breathe instead of being letterboxed under the
+// type. Falls back to a tinted placeholder when no images exist.
 const Hero = ({ p }: { p: Project }) => {
   const renovation = p.category === "Renovation" && p.before && p.after;
 
+  // Reusable overlay so renovation and single-image variants share the same
+  // typography block without duplication.
+  const TitleBlock = (
+    <div className="max-w-3xl">
+      <div className="flex items-center flex-wrap gap-2 sm:gap-3 text-[10px] sm:text-xs uppercase tracking-[0.25em] sm:tracking-[0.3em] text-white/80 font-medium mb-3 sm:mb-4">
+        <span>{p.category}</span>
+        {p.badge && (
+          <>
+            <span className="w-1 h-1 rounded-full bg-white/40" />
+            <span className="bg-crimson text-white px-3 py-1 rounded-full normal-case tracking-normal text-[10px] sm:text-[11px] font-medium">
+              {p.badge}
+            </span>
+          </>
+        )}
+      </div>
+      <h1 className="font-serif text-[28px] sm:text-5xl lg:text-6xl text-white font-semibold leading-[1.08] mb-2 sm:mb-3 drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)]">
+        {p.name}
+      </h1>
+      <div className="flex items-center gap-2 text-white/85">
+        <MapPin className="w-4 h-4 text-crimson-light shrink-0" />
+        <span className="text-sm sm:text-base">{p.location}</span>
+      </div>
+    </div>
+  );
+
   return (
-    <section className="relative pt-20 sm:pt-24">
+    <section className="relative">
       <div className="container">
         <Link
           to="/#projects"
-          className="inline-flex items-center gap-2 text-sm text-navy/70 hover:text-crimson transition-smooth mt-4 sm:mt-6 mb-4"
+          className="inline-flex items-center gap-2 text-sm text-navy/70 hover:text-crimson transition-smooth pt-20 sm:pt-24 mb-3 sm:mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to portfolio
@@ -92,52 +121,43 @@ const Hero = ({ p }: { p: Project }) => {
       </div>
 
       <div className="container">
-        <div className="reveal rounded-2xl sm:rounded-3xl overflow-hidden border border-navy/10 shadow-card bg-muted">
+        <div className="reveal relative rounded-2xl sm:rounded-3xl overflow-hidden border border-navy/10 shadow-lift bg-navy">
           {renovation ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2">
-              <div className="relative aspect-[4/3] sm:aspect-[3/2] lg:aspect-[16/10] lg:max-h-[55vh] overflow-hidden">
-                <img src={p.before} alt={`${p.name} before`} className="w-full h-full object-cover" />
-                <span className="absolute top-3 left-3 sm:top-4 sm:left-4 text-[10px] sm:text-[11px] font-semibold tracking-wider uppercase bg-navy/85 text-white px-2.5 sm:px-3 py-1 rounded-full">
-                  Before
-                </span>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2">
+                <div className="relative aspect-[4/3] sm:aspect-[4/5] lg:aspect-[3/4] overflow-hidden">
+                  <img src={p.before} alt={`${p.name} before`} className="w-full h-full object-cover" />
+                  <span className="absolute top-3 left-3 sm:top-4 sm:left-4 text-[10px] sm:text-[11px] font-semibold tracking-wider uppercase bg-navy/85 text-white px-2.5 sm:px-3 py-1 rounded-full">
+                    Before
+                  </span>
+                </div>
+                <div className="relative aspect-[4/3] sm:aspect-[4/5] lg:aspect-[3/4] overflow-hidden">
+                  <img src={p.after} alt={`${p.name} after`} className="w-full h-full object-cover" />
+                  <span className="absolute top-3 left-3 sm:top-4 sm:left-4 text-[10px] sm:text-[11px] font-semibold tracking-wider uppercase bg-crimson text-white px-2.5 sm:px-3 py-1 rounded-full">
+                    After
+                  </span>
+                </div>
               </div>
-              <div className="relative aspect-[4/3] sm:aspect-[3/2] lg:aspect-[16/10] lg:max-h-[55vh] overflow-hidden">
-                <img src={p.after} alt={`${p.name} after`} className="w-full h-full object-cover" />
-                <span className="absolute top-3 left-3 sm:top-4 sm:left-4 text-[10px] sm:text-[11px] font-semibold tracking-wider uppercase bg-crimson text-white px-2.5 sm:px-3 py-1 rounded-full">
-                  After
-                </span>
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy/95 via-navy/70 to-transparent pt-16 sm:pt-24 pb-5 sm:pb-8 px-5 sm:px-10">
+                {TitleBlock}
               </div>
-            </div>
+            </>
           ) : p.cover ? (
-            <div className="relative aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9] lg:max-h-[55vh]">
-              <img src={p.cover} alt={p.name} className="w-full h-full object-cover" />
+            <div className="relative aspect-[4/5] sm:aspect-[16/10] lg:aspect-[16/9]">
+              <img src={p.cover} alt={p.name} className="absolute inset-0 w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/45 to-navy/10" />
+              <div className="absolute inset-x-0 bottom-0 px-5 sm:px-10 pb-5 sm:pb-10">
+                {TitleBlock}
+              </div>
             </div>
           ) : (
-            <div className="aspect-[4/3] sm:aspect-[16/9] lg:aspect-[21/9] lg:max-h-[55vh] flex items-center justify-center text-navy/30">
-              <ImageIcon className="w-12 h-12 sm:w-16 sm:h-16" />
+            <div className="relative aspect-[4/5] sm:aspect-[16/10] lg:aspect-[16/9] flex items-center justify-center bg-gradient-to-br from-navy to-navy-light">
+              <ImageIcon className="w-12 h-12 sm:w-16 sm:h-16 text-white/20" />
+              <div className="absolute inset-x-0 bottom-0 px-5 sm:px-10 pb-5 sm:pb-10">
+                {TitleBlock}
+              </div>
             </div>
           )}
-        </div>
-
-        <div className="reveal mt-6 sm:mt-10 mb-2 max-w-3xl">
-          <div className="flex items-center flex-wrap gap-2 sm:gap-3 text-[11px] sm:text-xs uppercase tracking-[0.25em] sm:tracking-[0.3em] text-crimson font-medium mb-3 sm:mb-4">
-            <span>{p.category}</span>
-            {p.badge && (
-              <>
-                <span className="w-1 h-1 rounded-full bg-crimson/60" />
-                <span className="bg-crimson text-white px-3 py-1 rounded-full normal-case tracking-normal text-[11px] font-medium">
-                  {p.badge}
-                </span>
-              </>
-            )}
-          </div>
-          <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-navy font-semibold leading-[1.1] sm:leading-[1.05] mb-3 sm:mb-4">
-            {p.name}
-          </h1>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <MapPin className="w-4 h-4 text-crimson shrink-0" />
-            <span className="text-sm sm:text-base">{p.location}</span>
-          </div>
         </div>
       </div>
     </section>
@@ -287,7 +307,7 @@ const ProjectDetail = () => {
       <main className="pb-16 sm:pb-24 bg-gradient-to-b from-background to-navy-soft/30 min-h-screen">
         <Hero p={project} />
 
-        <div className="container mt-10 sm:mt-16 space-y-10 sm:space-y-16">
+        <div className="container mt-8 sm:mt-14 space-y-8 sm:space-y-14">
           {(hasSpecs || hasMap) && (
             <section className={`reveal grid gap-8 ${hasSpecs && hasMap ? "lg:grid-cols-[1.2fr_1fr]" : "lg:grid-cols-1"}`}>
               {hasSpecs && <SpecTable p={project} />}

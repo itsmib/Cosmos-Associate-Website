@@ -100,10 +100,17 @@ const PlotStat = ({
 const PlotLayoutCard = ({ p }: { p: Project }) => {
   const total = p.plotsTotal ?? p.plots;
   const sold = p.plotsSold;
-  const available = p.plotsAvailable;
 
   const totalN = toNumber(total);
   const soldN = toNumber(sold);
+  // Derive `available` from total - sold whenever both are numeric, so editors
+  // only have to keep two numbers in sync. Falls back to an explicit
+  // `plotsAvailable` value (which may be a string like "Sold out") if the
+  // arithmetic isn't possible.
+  const available =
+    totalN !== undefined && soldN !== undefined
+      ? Math.max(0, totalN - soldN)
+      : p.plotsAvailable;
   const showBar = totalN !== undefined && soldN !== undefined && totalN > 0;
   const soldPct = showBar ? Math.min(100, Math.max(0, Math.round((soldN! / totalN!) * 100))) : 0;
 
