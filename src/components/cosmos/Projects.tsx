@@ -57,6 +57,121 @@ const ProjectCard = ({ p }: { p: Project }) => (
   </CardLink>
 );
 
+// PlotLayout card: same shape as a regular project card but the bottom half
+// surfaces inventory — Total / Sold / Available — instead of the badge. We
+// also try to compute a sold/total ratio for a tiny progress bar; if either
+// number is non-numeric (e.g. "Sold out", "12+"), we just skip the bar.
+const toNumber = (v: string | number | undefined): number | undefined => {
+  if (v === undefined) return undefined;
+  if (typeof v === "number") return Number.isFinite(v) ? v : undefined;
+  const m = v.match(/-?\d+(\.\d+)?/);
+  if (!m) return undefined;
+  const n = Number(m[0]);
+  return Number.isFinite(n) ? n : undefined;
+};
+
+const PlotStat = ({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string | number;
+  tone: "neutral" | "muted" | "highlight";
+}) => {
+  const toneClass =
+    tone === "highlight"
+      ? "bg-crimson/10 border-crimson/20 text-crimson"
+      : tone === "muted"
+      ? "bg-navy/[0.04] border-navy/10 text-navy/70"
+      : "bg-navy/[0.04] border-navy/10 text-navy";
+  return (
+    <div className={`rounded-lg border ${toneClass} px-2 py-2 flex flex-col items-center justify-center text-center`}>
+      <div className="text-[9px] uppercase tracking-[0.12em] font-medium opacity-80 leading-none mb-1">
+        {label}
+      </div>
+      <div className="font-serif text-base sm:text-lg font-semibold leading-none">
+        {value}
+      </div>
+    </div>
+  );
+};
+
+const PlotLayoutCard = ({ p }: { p: Project }) => {
+  const total = p.plotsTotal ?? p.plots;
+  const sold = p.plotsSold;
+  const available = p.plotsAvailable;
+
+  const totalN = toNumber(total);
+  const soldN = toNumber(sold);
+  const showBar = totalN !== undefined && soldN !== undefined && totalN > 0;
+  const soldPct = showBar ? Math.min(100, Math.max(0, Math.round((soldN! / totalN!) * 100))) : 0;
+
+  return (
+    <CardLink slug={p.slug} className="shrink-0 w-[280px] sm:w-[340px] snap-start">
+      <article className="group bg-white rounded-2xl border border-navy/10 overflow-hidden shadow-card hover:shadow-lift hover:-translate-y-1 transition-smooth h-full flex flex-col">
+        <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+          {p.cover ? (
+            <img
+              src={p.cover}
+              alt={p.name}
+              loading="lazy"
+              className="w-full h-full object-cover group-hover:scale-105 transition-smooth duration-700"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-navy/30">
+              <ImageIcon className="w-10 h-10" />
+            </div>
+          )}
+          <span className="absolute top-3 left-3 text-[10px] font-semibold tracking-wider uppercase bg-white/95 text-crimson px-2.5 py-1 rounded-full shadow-card">
+            For Sale
+          </span>
+        </div>
+
+        <div className="p-5 flex flex-col flex-1">
+          <h3 className="font-serif text-xl text-navy font-semibold mb-1 line-clamp-1">{p.name}</h3>
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4">
+            <MapPin className="w-3.5 h-3.5" />
+            {p.location}
+          </div>
+
+          {(total !== undefined || sold !== undefined || available !== undefined) ? (
+            <>
+              <div className="grid grid-cols-3 gap-2 mt-auto">
+                <PlotStat label="Total"     value={total ?? "—"}     tone="neutral" />
+                <PlotStat label="Sold"      value={sold ?? "—"}      tone="muted" />
+                <PlotStat label="Available" value={available ?? "—"} tone="highlight" />
+              </div>
+
+              {showBar && (
+                <div className="mt-3" aria-hidden="true">
+                  <div className="h-1.5 rounded-full bg-navy/10 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-navy to-crimson transition-smooth"
+                      style={{ width: `${soldPct}%` }}
+                    />
+                  </div>
+                  <div className="mt-1.5 text-[10px] text-muted-foreground tracking-wide">
+                    {soldPct}% sold
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            p.badge && (
+              <div className="mt-auto">
+                <span className="text-xs font-medium bg-crimson text-white px-3 py-1 rounded-full">
+                  {p.badge}
+                </span>
+              </div>
+            )
+          )}
+        </div>
+      </article>
+    </CardLink>
+  );
+};
+
 // Renovation card: Before | After side-by-side, falling back to whatever
 // single image exists (cover, then before, then after) if the pair isn't
 // complete yet.
@@ -257,6 +372,7 @@ const Projects = () => {
         <div className="space-y-20">
           {SECTIONS.map((section) => {
             const isReno = section.key === "Renovation";
+            const isPlots = section.key === "PlotLayout";
             const items = projectsByCategory(section.key);
             const hasItems = items.length > 0;
             return (
@@ -276,6 +392,8 @@ const Projects = () => {
                     ? items.map((p) =>
                         isReno
                           ? <RenovationCard key={p.slug} p={p} />
+                          : isPlots
+                          ? <PlotLayoutCard  key={p.slug} p={p} />
                           : <ProjectCard     key={p.slug} p={p} />
                       )
                     : <ComingSoon />}

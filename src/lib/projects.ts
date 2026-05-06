@@ -52,9 +52,17 @@ export interface Project {
   yearStarted?: string | number;
   yearCompleted?: string | number;
   plots?: string | number;
+  // PlotLayout-only inventory breakdown. Each is optional — the card renders
+  // whatever is provided. Accepts numbers or strings ("12", "12+", "Sold out").
+  plotsTotal?: string | number;
+  plotsSold?: string | number;
+  plotsAvailable?: string | number;
   areaSqft?: string;
   amenities?: string[];
   mapLink?: string;
+  // Optional YouTube walkthrough. Accepts a raw video ID, a youtu.be link, or
+  // a youtube.com/watch?v=… URL — see extractYouTubeId.
+  youtubeId?: string;
 }
 
 const CATEGORY_MAP: Record<string, ProjectCategory> = {
@@ -140,6 +148,29 @@ function normaliseCategory(raw: unknown): ProjectCategory | null {
   return CATEGORY_MAP[raw.trim().toLowerCase()] ?? null;
 }
 
+// Pull the 11-char video ID out of any of the common YouTube URL shapes, or
+// pass a bare ID through. Returns undefined if we can't make sense of it so
+// the caller knows to skip the embed entirely.
+export function extractYouTubeId(raw: unknown): string | undefined {
+  if (typeof raw !== "string") return undefined;
+  const s = raw.trim();
+  if (!s) return undefined;
+  // Bare ID (YouTube IDs are 11 chars of [A-Za-z0-9_-]).
+  if (/^[A-Za-z0-9_-]{11}$/.test(s)) return s;
+  // youtu.be/<id>, youtube.com/watch?v=<id>, /embed/<id>, /shorts/<id>
+  const patterns = [
+    /youtu\.be\/([A-Za-z0-9_-]{11})/,
+    /[?&]v=([A-Za-z0-9_-]{11})/,
+    /\/embed\/([A-Za-z0-9_-]{11})/,
+    /\/shorts\/([A-Za-z0-9_-]{11})/,
+  ];
+  for (const re of patterns) {
+    const m = s.match(re);
+    if (m) return m[1];
+  }
+  return undefined;
+}
+
 function asString(v: unknown): string | undefined {
   if (v === undefined || v === null) return undefined;
   const s = String(v).trim();
@@ -208,9 +239,29 @@ function buildProject(slug: string, b: FolderBuckets): Project | null {
     yearStarted: asString(fm.yearStarted) ?? (typeof fm.yearStarted === "number" ? fm.yearStarted : undefined),
     yearCompleted: asString(fm.yearCompleted) ?? (typeof fm.yearCompleted === "number" ? fm.yearCompleted : undefined),
     plots: asString(fm.plots) ?? (typeof fm.plots === "number" ? fm.plots : undefined),
+    plotsTotal:
+      asString(fm.plotsTotal) ??
+      (typeof fm.plotsTotal === "number" ? fm.plotsTotal : undefined) ??
+      asString(fm.totalPlots) ??
+      (typeof fm.totalPlots === "number" ? fm.totalPlots : undefined),
+    plotsSold:
+      asString(fm.plotsSold) ??
+      (typeof fm.plotsSold === "number" ? fm.plotsSold : undefined) ??
+      asString(fm.soldPlots) ??
+      (typeof fm.soldPlots === "number" ? fm.soldPlots : undefined),
+    plotsAvailable:
+      asString(fm.plotsAvailable) ??
+      (typeof fm.plotsAvailable === "number" ? fm.plotsAvailable : undefined) ??
+      asString(fm.availablePlots) ??
+      (typeof fm.availablePlots === "number" ? fm.availablePlots : undefined),
     areaSqft: asString(fm.areaSqft),
     amenities: asStringList(fm.amenities),
     mapLink: asString(fm.mapLink) ?? asString(fm.mapQuery),
+    youtubeId:
+      extractYouTubeId(fm.youtubeId) ??
+      extractYouTubeId(fm.youtube) ??
+      extractYouTubeId(fm.video) ??
+      extractYouTubeId(fm.videoUrl),
   };
 }
 

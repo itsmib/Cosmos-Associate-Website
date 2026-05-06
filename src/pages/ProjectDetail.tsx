@@ -279,6 +279,7 @@ const ProjectDetail = () => {
   const hasGallery = project.gallery.length > 0;
   const hasMap = !!project.mapLink;
   const hasDescription = !!project.description;
+  const hasVideo = !!project.youtubeId;
 
   return (
     <>
@@ -302,6 +303,24 @@ const ProjectDetail = () => {
               <article className="prose prose-base sm:prose-lg max-w-none prose-headings:font-serif prose-headings:text-navy prose-h1:text-2xl sm:prose-h1:text-3xl prose-h2:text-xl sm:prose-h2:text-2xl prose-p:text-navy/80 prose-p:leading-relaxed prose-strong:text-navy prose-a:text-crimson hover:prose-a:text-crimson-light prose-li:text-navy/80 prose-blockquote:border-l-crimson prose-blockquote:text-navy/70">
                 <ReactMarkdown>{project.description!}</ReactMarkdown>
               </article>
+            </section>
+          )}
+
+          {hasVideo && (
+            <section className="reveal">
+              <div className="text-[11px] sm:text-xs uppercase tracking-[0.25em] sm:tracking-[0.3em] text-crimson font-medium mb-3 sm:mb-4">
+                Property Walkthrough
+              </div>
+              <div className="rounded-2xl sm:rounded-3xl overflow-hidden border border-navy/10 shadow-lift bg-navy aspect-video">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${project.youtubeId}?rel=0`}
+                  title={`${project.name} walkthrough`}
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="w-full h-full"
+                />
+              </div>
             </section>
           )}
 

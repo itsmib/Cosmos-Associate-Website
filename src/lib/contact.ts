@@ -10,7 +10,7 @@ export const OFFICE_MAPS_URL = "https://maps.app.goo.gl/FsfYS14fNTbWTHDp7";
 // CTAs land on the verified Cosmos GBP page. Replace with a deep-link to the
 // reviews surface (e.g. https://search.google.com/local/reviews?placeid=...)
 // once the GBP placeId is on hand.
-export const GOOGLE_REVIEWS_URL = OFFICE_MAPS_URL;
+export const GOOGLE_REVIEWS_URL = "https://search.google.com/local/writereview?placeid=ChIJ2RDmyiYRVToRRwlANvieaaA";
 
 const WHATSAPP_BASE = "https://wa.me/919944348827?text=";
 const DEFAULT_MESSAGE =
